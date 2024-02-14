@@ -1,0 +1,13 @@
+﻿@page "/"
+
+@inject IJSRuntime JSRuntime
+
+<h3>PageOne</h3>
+
+@code {
+    private async Task AddFareAsync()
+    {
+        var fareData = new { /* ... your fare data ... */ };
+        await JSRuntime.InvokeVoidAsync("addFareToFirestore", fareData);
+    }
+}

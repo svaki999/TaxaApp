@@ -26,7 +26,30 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+
+    <div id="map" style="height: 500px; width: 100%;"></div>
+
     <script src="_framework/blazor.webassembly.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAz0fN0yi7UiRmtkg19wyVpsZA1ynNl1u0",
+            authDomain: "ethereal-link-411712.firebaseapp.com",
+            projectId: "ethereal-link-411712",
+            storageBucket: "ethereal-link-411712.appspot.com",
+            messagingSenderId: "23320427852",
+            appId: "1:23320427852:web:6ae53a306c53df4fd823e9"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+    </script>
+    <script src="firebaseInterop.js"></script>
 </body>
 
 </html>
