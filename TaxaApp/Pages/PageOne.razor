@@ -12,26 +12,48 @@
 </div>
 
 <div>
-    <form @onsubmit="HandleSubmit">
-        <div class="form-group">
-            <label for="startingAddress">Starting Address:</label>
-            <input type="text" class="form-control" id="startingAddress" @bind="startingAddress">
-        </div>
-        <div class="form-group">
-            <label for="destinationAddress">Destination Address:</label>
-            <input type="text" class="form-control" id="destinationAddress" @bind="destinationAddress">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <input @bind="startAddress" placeholder="Start address" />
+    <input @bind="endAddress" placeholder="End address" />
+
+    <button @onclick="CalculateRoute">Get Directions</button>
+
+
+
 </div>
 
 @code {
-    private string startingAddress;
-    private string destinationAddress;
+    //API KEY                   AIzaSyArd3NK5stVf6nSeBSEcrsH-9FKCRuT_U0
+    private string startAddress = "";
+    private string endAddress = "";
 
-    private void HandleSubmit()
+    private async Task CalculateRoute()
     {
-        // You can also pass parameters if needed
-        NavigationManager.NavigateTo("/pagetwo");
+        // Implementation here...
+    }
+
+
+    private async Task SearchAddresses(string query)
+    {
+        if (string.IsNullOrEmpty(query)) return;
+
+        // Replace with your Google Maps API key
+        const string apiKey = "AIzaSyArd3NK5stVf6nSeBSEcrsH-9FKCRuT_U0";
+
+        string url = $"https://maps.googleapis.com/maps/api/place/autocomplete/json?input={query}&key=AIzaSyArd3NK5stVf6nSeBSEcrsH - 9FKCRuT_U0";
+        try
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetStringAsync(url);
+                dynamic results = System.Text.Json.JsonSerializer.Deserialize<dynamic>(response);
+
+                // Pass suggestions to JavaScript using JSRuntime
+                await JSRuntime.InvokeAsync<object>("displayAddressSuggestions", results);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle errors gracefully
+        }
     }
 }

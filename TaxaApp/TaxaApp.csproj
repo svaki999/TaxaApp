@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\firebaseinterop.js" />
+    <None Include="wwwroot\firebaseInterop.js" />
   </ItemGroup>
 
   <ItemGroup>
