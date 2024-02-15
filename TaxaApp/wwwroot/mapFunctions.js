@@ -50,7 +50,7 @@ window.updateMapWithRoute = function (routeData) {
     const map = new google.maps.Map(document.getElementById("map"));
     new google.maps.Polyline({
         path: pathSegments,
-        strokeColor: "#FF0000",
+        strokeColor: '#FF0000',
         strokeOpacity: 0.5,
         strokeWeight: 2
     }).setMap(map);

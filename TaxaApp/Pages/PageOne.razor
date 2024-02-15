@@ -14,21 +14,62 @@
 <div>
     <input @bind="startAddress" placeholder="Start address" />
     <input @bind="endAddress" placeholder="End address" />
-
     <button @onclick="CalculateRoute">Get Directions</button>
-
-
-
 </div>
 
 @code {
     //API KEY                   AIzaSyArd3NK5stVf6nSeBSEcrsH-9FKCRuT_U0
-    private string startAddress = "";
-    private string endAddress = "";
+    // Address storage (choose state variables or hidden inputs)
+    private string startAddress { get; set; } = "";
+    private string endAddress { get; set; } = "";
+
+    // Define the ValidateAddresses method
+    private bool ValidateAddresses(string start, string end)
+    {
+        // Implement your validation logic here
+        // Check if addresses are empty, non-empty, have valid formats, etc.
+        // Return true if addresses are valid, false otherwise
+
+        // Example basic validation
+        if (string.IsNullOrEmpty(start) || string.IsNullOrEmpty(end))
+        {
+            return false;
+        }
+        return true;
+    }
 
     private async Task CalculateRoute()
     {
-        // Implementation here...
+        // Validate addresses (optional)
+        if (!ValidateAddresses(startAddress, endAddress)) return;
+
+        // Replace with your Google Maps API key
+        const string apiKey = "AIzaSyArd3NK5stVf6nSeBSEcrsH-9FKCRuT_U0";
+
+        string url = $"https://maps.googleapis.com/maps/api/directions/json?origin={Uri.EscapeDataString(startAddress)}&destination={Uri.EscapeDataString(endAddress)}&travelMode=driving&key={apiKey}";
+
+        try
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetStringAsync(url);
+                dynamic routeData = System.Text.Json.JsonSerializer.Deserialize<dynamic>(response);
+
+                // Check for errors in response
+                if (routeData.status != "OK")
+                {
+                    // Handle errors gracefully
+                    return;
+                }
+
+                // Call JavaScript to update map and potentially other UI elements
+                await JSRuntime.InvokeAsync<object>("updateMapWithRoute", routeData);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle errors gracefully
+        }
     }
 
 
