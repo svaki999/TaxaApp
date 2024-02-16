@@ -1,26 +1,26 @@
-window.initMap = function () {
-    const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer();
-    const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 7,
-        center: { lat: 55.6761, lng: 12.5683 } // Example center (Copenhagen)
-    });
-    directionsRenderer.setMap(map);
+//window.initMap = function () {
+//    const directionsService = new google.maps.DirectionsService();
+//    const directionsRenderer = new google.maps.DirectionsRenderer();
+//    const map = new google.maps.Map(document.getElementById("map"), {
+//        zoom: 7,
+//        center: { lat: 55.6761, lng: 12.5683 } // Example center (Copenhagen)
+//    });
+//    directionsRenderer.setMap(map);
 
-    window.calculateAndDisplayRoute = function (directionsService, directionsRenderer) {
-        directionsService.route({
-            origin: document.getElementById("start").value, // Assuming you have an input with id="start"
-            destination: document.getElementById("end").value, // Assuming you have an input with id="end"
-            travelMode: google.maps.TravelMode.DRIVING,
-        }, (response, status) => {
-            if (status === "OK") {
-                directionsRenderer.setDirections(response);
-            } else {
-                window.alert("Directions request failed due to " + status);
-            }
-        });
-    };
-};
+//    window.calculateAndDisplayRoute = function (directionsService, directionsRenderer) {
+//        directionsService.route({
+//            origin: document.getElementById("start").value, // Assuming you have an input with id="start"
+//            destination: document.getElementById("end").value, // Assuming you have an input with id="end"
+//            travelMode: google.maps.TravelMode.DRIVING,
+//        }, (response, status) => {
+//            if (status === "OK") {
+//                directionsRenderer.setDirections(response);
+//            } else {
+//                window.alert("Directions request failed due to " + status);
+//            }
+//        });
+//    };
+//};
 
 window.displayAddressSuggestions = function (suggestions) {
     // Create an array to store formatted suggestions
@@ -39,24 +39,27 @@ window.displayAddressSuggestions = function (suggestions) {
 };
 
 window.updateMapWithRoute = function (routeData) {
-    // Decode polyline and create path segments
-    const route = decodePolyline(routeData.routes[0].overview_polyline.points);
-    const pathSegments = [];
-    for (let i = 0; i < route.length; i += 2) {
-        pathSegments.push({ lat: route[i], lng: route[i + 1] });
-    }
+    const map = document.getElementById("map"); // Use existing map instance
 
-    // Draw the route on the map
-    const map = new google.maps.Map(document.getElementById("map"));
-    new google.maps.Polyline({
-        path: pathSegments,
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.5,
-        strokeWeight: 2
-    }).setMap(map);
+    // Create directionsService and directionsRenderer
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
 
-    // Calculate and display distance (optional)
+    // Decode polyline (if necessary)
+    const decodedPolyline = routeData.routes[0].overview_polyline.points; // Assuming you've already decoded it
+
+    // Set the route's polyline (or use alternative route representation)
+    directionsRenderer.setDirections({
+        routes: [
+            {
+                overview_polyline: {
+                    points: decodedPolyline
+                }
+            }
+        ]
+    });
+
+    // Extract and display distance (if desired)
     const distance = routeData.routes[0].legs[0].distance.value;
-    document.getElementById("distance").textContent = "Distance: ${distance} meters";
-    DotNet.invokeMethodAsync("TaxaApp", "ShowRouteAndDistance", routeData);
+    document.getElementById("distance").textContent = `Distance: ${distance} meters`;
 };
