@@ -17,11 +17,18 @@
 }
 
 .search-box {
-    width: 100%;
-    height: 30%;
-    margin: 25px;
+    width: 50%;
+    height: 50%;
+    margin: 2%;
     border: 1px solid black;
     background-color: white;
+}
+
+.container {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    height: 100vh; /* Takes full viewport height */
 }
 
 .menu-box {

@@ -11,29 +11,22 @@
 <html>
 
 <body>
-<div>
-    <iframe width="600" height="450"
-     style="border:0" loading="lazy" 
-     allowfullscreen
-     src="https://www.google.com/maps/embed/v1/view?zoom=11&center=55.6761%2C12.5683&key=AIzaSyArd3NK5stVf6nSeBSEcrsH-9FKCRuT_U0">
-    </iframe>
+    <div>
+        <iframe id="mapIframe" width="1250" height="450" style="border:0" loading="lazy" allowfullscreen src="@MapRoute"></iframe>
+    </div>
+
+<div class="container">
+    <input class="search-box" type="text" @bind="AddressStart" placeholder="Vælg Adresse" />
+    <input class="search-box" type="text" @bind="AddressEnd" placeholder="Vælg Destination" />
+    <button type="button" @onclick="Calculate">Næste</button>
 </div>
 
-<div>
-    <input class="search-box" type="text" @bind="AddressStart" placeholder="address start" />
-    <input class="search-box" type="text" @bind="AddressEnd" placeholder="address slut" />
-    <button type="button" @onclick="Calculate">calculate</button>
-</div>
+        <script>
+            function updateIframeSource(src) {
+                document.getElementById('mapIframe').src = src;
+            }
+        </script>
 
-<div class="square square2">
-    @if (Button)
-    {
-        <iframe width="50%" height="50%" frameborder="0" style="border:0;" allowfullscreen src="@MapUrl"></iframe>
-    }
-    <p>
-        @DistanceResult
-    </p>
-</div>
 </body>
 
 </html>
