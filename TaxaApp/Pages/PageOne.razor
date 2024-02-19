@@ -7,27 +7,28 @@
 @inject NavigationManager NavigationManager
 @inject ApiService ApiService
 
-
 <html>
-
 <body>
-    <div>
-        <iframe id="mapIframe" width="1250" height="450" style="border:0" loading="lazy" allowfullscreen src="@MapRoute"></iframe>
+    <div class="container">
+        <div class="big-box">
+            <iframe id="mapIframe" width="100%" height="100%" style="border:0" loading="lazy" allowfullscreen src="@MapRoute"></iframe>
+        </div>
+
+        <div class="input-wrapper">
+            <input class="search-box" type="text" @bind="AddressStart" placeholder="Vælg Adresse" />
+            <input class="search-box" type="text" @bind="AddressEnd" placeholder="Vælg Destination" />
+        </div>
+
+        <div class="button-container">
+            <button type="button" @onclick="Calculate">Næste</button>
+        </div>
     </div>
 
-<div class="container">
-    <input class="search-box" type="text" @bind="AddressStart" placeholder="Vælg Adresse" />
-    <input class="search-box" type="text" @bind="AddressEnd" placeholder="Vælg Destination" />
-    <button type="button" @onclick="Calculate">Næste</button>
-</div>
-
-        <script>
-            function updateIframeSource(src) {
-                document.getElementById('mapIframe').src = src;
-            }
-        </script>
-
+    <script>
+        function updateIframeSource(src) {
+            document.getElementById('mapIframe').src = src;
+        }
+    </script>
 </body>
-
 </html>
 
