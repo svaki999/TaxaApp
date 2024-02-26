@@ -1,3 +1,5 @@
+using Blazored.Modal;
+using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Globalization;
@@ -25,6 +27,9 @@ namespace TaxaApp.Pages
         public string? MapRoute { get; set; } = $"https://www.google.com/maps/embed/v1/view?zoom=11&center=55.6761%2C12.5683&key={apiKey}"; // Default view
 
         public string? DistanceResult { get; set; }
+
+        [Inject]
+        public IModalService ModalService { get; set; }
 
         //[Parameter]
         //public string Title { get; set; }
@@ -77,6 +82,31 @@ namespace TaxaApp.Pages
 
         }
 
+        private async Task ShowPageTwo()
+        {
+            if (AddressStart == null || AddressEnd == null)
+            {
+                return;
+            }
+
+            var parameters = new ModalParameters();
+            parameters.Add("AddressStart", AddressStart);
+            parameters.Add("AddressEnd", AddressEnd);
+
+            var options = new ModalOptions
+            {
+                Size = ModalSize.Large,
+                HideCloseButton = false
+            };
+
+            var modal = ModalService.Show<PageTwo>("My Modal Title", parameters, options);
+            var result = await modal.Result;
+
+            if (!result.Cancelled)
+            {
+                // Handle the result if needed
+            }
+        }
 
         // Calculate the price based on distance and time (replace with your specific
         public async Task Calculate()
@@ -89,24 +119,24 @@ namespace TaxaApp.Pages
 
 
             var response = await ApiService.GetDistance(AddressStart, AddressEnd);
-                if (response != null)
+            if (response != null)
+            {
+                var result = JsonSerializer.Deserialize<GoogleMapsDistanceMatrixResponse>(response);
+
+                if (result != null)
                 {
-                    var result = JsonSerializer.Deserialize<GoogleMapsDistanceMatrixResponse>(response);
+                    // Extract relevant data (assuming specific properties in your response)
+                    string distance = result.rows?.FirstOrDefault()?.elements?.FirstOrDefault()?.distance?.text ?? "";
+                    string duration = result.rows?.FirstOrDefault()?.elements?.FirstOrDefault()?.duration?.text ?? "";
 
-                    if (result != null)
-                    {
-                        // Extract relevant data (assuming specific properties in your response)
-                        string distance = result.rows?.FirstOrDefault()?.elements?.FirstOrDefault()?.distance?.text ?? "";
-                        string duration = result.rows?.FirstOrDefault()?.elements?.FirstOrDefault()?.duration?.text ?? "";
+                    // Construct the directions URL using your API key and addresses
+                    string newMapRoute = $"https://www.google.com/maps/embed/v1/directions?key={apiKey}&origin={AddressStart}&destination={AddressEnd}";
+                    await JSRuntime.InvokeVoidAsync("updateIframeSource", newMapRoute);
 
-                        // Construct the directions URL using your API key and addresses
-                        string newMapRoute = $"https://www.google.com/maps/embed/v1/directions?key={apiKey}&origin={AddressStart}&destination={AddressEnd}";
-                        await JSRuntime.InvokeVoidAsync("updateIframeSource", newMapRoute);
-
-                        // Update displayed information
-                        DistanceResult = $"Distance: {distance}, Tid: {duration}, Kr: {CalculatePrice(SelectedTime, SelectedCar, distance)}"; // Calculate and display price
-                    }
+                    // Update displayed information
+                    DistanceResult = $"Distance: {distance}, Tid: {duration}, Kr: {CalculatePrice(SelectedTime, SelectedCar, distance)}"; // Calculate and display price
                 }
             }
         }
     }
+}
