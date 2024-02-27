@@ -28,6 +28,8 @@ namespace TaxaApp.Pages
 
         public string? DistanceResult { get; set; }
 
+        private bool _showPageTwoOptions { get; set; } = false;
+
         [Inject]
         public IModalService ModalService { get; set; }
 
@@ -89,6 +91,8 @@ namespace TaxaApp.Pages
                 return;
             }
 
+            _showPageTwoOptions = true;
+
             var parameters = new ModalParameters();
             parameters.Add("AddressStart", AddressStart);
             parameters.Add("AddressEnd", AddressEnd);
@@ -112,11 +116,13 @@ namespace TaxaApp.Pages
         public async Task Calculate()
         {
 
+
             if (string.IsNullOrWhiteSpace(AddressStart) || string.IsNullOrWhiteSpace(AddressEnd))
             {
                 return; // Handle empty addresses
             }
 
+            _showPageTwoOptions = true;
 
             var response = await ApiService.GetDistance(AddressStart, AddressEnd);
             if (response != null)

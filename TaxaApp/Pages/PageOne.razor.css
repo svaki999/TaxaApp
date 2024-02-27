@@ -117,3 +117,11 @@
 .square2 {
     background-color: #DCCCBB;
 }
+
+.d-block {
+    display: block;
+}
+
+.d-none {
+    display: none;
+}

@@ -20,7 +20,11 @@
         </div>
 
         <div class="button-container">
-            <button type="button" @onclick="ShowPageTwo">Næste</button>
+            <button type="button" @onclick="Calculate">Næste</button>
+        </div>
+
+        <div class="@(_showPageTwoOptions ? "d-block" : "d-none")">
+            <p>Test</p>
         </div>
     </div>
 
