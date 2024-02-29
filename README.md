@@ -42,3 +42,5 @@ gantt
 
 
 ```
+## Mockup
+![mockup](https://github.com/svaki999/TaxaApp/assets/117731913/1d7f848b-0994-4e5c-bc2a-7aec07b34e61)
