@@ -9,25 +9,64 @@
 
 <html>
 <body>
+    @* Google Maps *@
     <div class="container">
         <div class="big-box">
             <iframe id="mapIframe" width="100%" height="100%" style="border:0" loading="lazy" allowfullscreen src="@MapRoute"></iframe>
         </div>
 
-        <div class="input-wrapper">
-            <input class="search-box" type="text" @bind="AddressStart" placeholder="Vælg Adresse" />
-            <input class="search-box" type="text" @bind="AddressEnd" placeholder="Vælg Destination" />
+        @* Indtast adresse og destination + knap til næste side *@
+        <div class="@(_showPageTwoOptions ? "d-none" : "d-block")">
+            <div class="input-wrapper">
+                <input class="search-box" type="text" @bind="AddressStart" placeholder="Vælg Adresse" />
+                <input class="search-box" type="text" @bind="AddressEnd" placeholder="Vælg Destination" />
+            </div>
+            <div class="button-container">
+                <button type="button" @onclick="Calculate">Næste</button>
+            </div>
         </div>
 
-        <div class="button-container">
-            <button type="button" @onclick="Calculate">Næste</button>
-        </div>
-
+        @* Vælg tidspunkt, biltype og pris *@
         <div class="@(_showPageTwoOptions ? "d-block" : "d-none")">
-            <p>Test</p>
+            <div class="caption">Tid</div>
+            <table>
+                <div class="block">
+                    <img src="/images/Clock.png" alt="Clock image" class="small-image" />
+                    <Select @onchange="(ChangeEventArgs e) => TimeOption = e.Value.ToString()">
+                        <option value="now">Nu</option>
+                        <option value="later">Vælg en senere tid/forhåndsbog</option>
+                    </Select>
+                </div>
+            </table>
+
+            <div class="caption">Vogn type</div>
+            <table>
+                <div class="block">
+                    <img src="/images/Vehicle.png" alt="Vehicle image" class="small-image" />
+                    <Select @onchange="(ChangeEventArgs e) => VehicleType = e.Value.ToString()">
+                        <option value="normal">Normal vogn</option>
+                        <option value="big">Stor vogn</option>
+                    </Select>
+                </div>
+            </table>
+
+            <div class="caption">Pris type</div>
+            <table>
+                <div class="block">
+                    <img src="/images/Price.png" alt="Price image" class="small-image" />
+                    <Select @onchange="(ChangeEventArgs e) => PriceType = e.Value.ToString()">
+                        <option value="set">Fast pris</option>
+                        <option value="taximeter">Taxameter</option>
+                    </Select>
+                </div>
+            </table>
+        <div class="button-container">
+            <button type="button" @onclick="ShowPageTwo">Næste</button>
         </div>
     </div>
+</div>
 
+    @* Dynamisk Google Maps iframe *@
     <script>
         function updateIframeSource(src) {
             document.getElementById('mapIframe').src = src;
@@ -35,4 +74,3 @@
     </script>
 </body>
 </html>
-

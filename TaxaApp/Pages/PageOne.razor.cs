@@ -16,14 +16,10 @@ namespace TaxaApp.Pages
         public string? AddressEnd { get; set; }
         public string? SelectedTime { get; set; }
         public string? SelectedCar { get; set; }
-        public int Checkbox1 { get; set; }
-        public bool Checkbox2 { get; set; }
-        public bool Checkbox3 { get; set; }
-        public bool Checkbox4 { get; set; }
-        public bool Checkbox5 { get; set; }
-        public bool Checkbox6 { get; set; }
-        public bool Checkbox7 { get; set; }
-        public bool Button { get; set; }
+        public string TimeOption { get; set; } = "now";
+        public string VehicleType { get; set; } = "normal";
+        public string PriceType { get; set; } = "set";
+
         public string? MapRoute { get; set; } = $"https://www.google.com/maps/embed/v1/view?zoom=11&center=55.6761%2C12.5683&key={apiKey}"; // Default view
 
         public string? DistanceResult { get; set; }
