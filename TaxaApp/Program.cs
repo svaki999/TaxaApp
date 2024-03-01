@@ -15,6 +15,9 @@ builder.Services.AddScoped<ApiService>();
 // Add Blazored Modal
 builder.Services.AddBlazoredModal();
 
+// Price logic
+builder.Services.AddScoped<PricingService>();
+
 // singleton = one instance for the entire application½
 // scoped = one instance for each request
 // transient = one instance for each time it is requested

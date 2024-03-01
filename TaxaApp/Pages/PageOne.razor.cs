@@ -2,7 +2,6 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System.Globalization;
 using System.Text.Json;
 using TaxaApp.Codes;
 
@@ -26,93 +25,15 @@ namespace TaxaApp.Pages
 
         private bool _showPageTwoOptions { get; set; } = false;
 
+        public double DistanceKm { get; set; }
+        public double DurationMinutes { get; set; }
+
         [Inject]
         public IModalService ModalService { get; set; }
 
-        //[Parameter]
-        //public string Title { get; set; }
-
-
-        private double CalculatePrice(string selectedTime, string selectedCar, string distance)
+        // Update map view and distance result
+        public async Task ShowMapDistance()
         {
-            double startPrice = 0; double pricePerKm = 0; double pricePerMin = 0;
-
-
-
-            // Implement your pricing logic here based on your actual pricing structure
-
-            // Example pricing logic (replace with your own):
-            if (selectedCar == "Almindelige Vogne")
-            {
-                if (selectedTime == "dag")
-                {
-                    startPrice = 37;
-                    pricePerKm = 12.75;
-                    pricePerMin = 5.75;
-                }
-                else
-                {
-                    startPrice = 47;
-                    pricePerKm = 16;
-                    pricePerMin = 7;
-                }
-            }
-            else if (selectedCar == "Store Vogne")
-            {
-                if (selectedTime == "dag")
-                {
-                    startPrice = 77;
-                    pricePerKm = 17;
-                    pricePerMin = 5.75;
-                }
-                else
-                {
-                    startPrice = 87;
-                    pricePerKm = 19;
-                    pricePerMin = 7;
-                }
-            }
-            // Assuming distance is provided in kilometers and you want to calculate total price
-            double totalDistance = double.Parse(distance, CultureInfo.InvariantCulture);
-            double totalPrice = startPrice + (pricePerKm * totalDistance); // Simplified calculation
-
-            return totalPrice; // Ensure to return the calculated total price
-
-        }
-
-        private async Task ShowPageTwo()
-        {
-            if (AddressStart == null || AddressEnd == null)
-            {
-                return;
-            }
-
-            _showPageTwoOptions = true;
-
-            var parameters = new ModalParameters();
-            parameters.Add("AddressStart", AddressStart);
-            parameters.Add("AddressEnd", AddressEnd);
-
-            var options = new ModalOptions
-            {
-                Size = ModalSize.Large,
-                HideCloseButton = false
-            };
-
-            var modal = ModalService.Show<PageTwo>("My Modal Title", parameters, options);
-            var result = await modal.Result;
-
-            if (!result.Cancelled)
-            {
-                // Handle the result if needed
-            }
-        }
-
-        // Calculate the price based on distance and time (replace with your specific
-        public async Task Calculate()
-        {
-
-
             if (string.IsNullOrWhiteSpace(AddressStart) || string.IsNullOrWhiteSpace(AddressEnd))
             {
                 return; // Handle empty addresses
@@ -136,8 +57,44 @@ namespace TaxaApp.Pages
                     await JSRuntime.InvokeVoidAsync("updateIframeSource", newMapRoute);
 
                     // Update displayed information
-                    DistanceResult = $"Distance: {distance}, Tid: {duration}, Kr: {CalculatePrice(SelectedTime, SelectedCar, distance)}"; // Calculate and display price
+                    DistanceResult = $"Distance: {distance}, Tid: {duration}";
                 }
+            }
+        }
+
+        private async Task ShowPageTwo()
+        {
+            if (AddressStart == null || AddressEnd == null)
+            {
+                // Handle errors or missing input
+                return;
+            }
+
+            // Calculate price
+            double distanceKm = DistanceKm; // Assuming you have this value
+            double durationInMinutes = DurationMinutes; // Assuming you have this value
+            DateTime now = DateTime.Now;
+            double price = PricingService.CalculatePrice(VehicleType, now, distanceKm, durationInMinutes, false, false, false, 0, false);
+
+            var parameters = new ModalParameters();
+            parameters.Add("AddressStart", AddressStart);
+            parameters.Add("AddressEnd", AddressEnd);
+            parameters.Add("Distance", distanceKm.ToString());
+            parameters.Add("Duration", durationInMinutes.ToString());
+            parameters.Add("Price", price.ToString("N2")); // Format price as needed
+
+            var options = new ModalOptions
+            {
+                Size = ModalSize.Large,
+                HideCloseButton = false
+            };
+
+            var modal = ModalService.Show<PageTwo>("Trip Details", parameters, options);
+            var result = await modal.Result;
+
+            if (!result.Cancelled)
+            {
+                // Handle the result if needed
             }
         }
     }

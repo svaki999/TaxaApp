@@ -2,6 +2,17 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
-<h1>Page Two</h1>
-<p>Address Start: @AddressStart</p>
-<p>Address End: @AddressEnd</p>
+<!-- PageTwo.razor -->
+<h3>Trip Details</h3>
+@if (Distance != null && Duration != null && Price != null)
+{
+    <p>Address Start: @AddressStart</p>
+    <p>Address End: @AddressEnd</p>
+    <p>Distance: @Distance km</p>
+    <p>Duration: @Duration minutes</p>
+    <p>Price: @Price kr</p>
+}
+else
+{
+    <p>Waiting for trip details...</p>
+}
